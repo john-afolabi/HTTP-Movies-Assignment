@@ -53,7 +53,7 @@ export default class Movie extends React.Component {
             }
           }}
         >
-          <button>Update Movie</button>
+          <button>Edit Movie</button>
         </Link>
       </div>
     );

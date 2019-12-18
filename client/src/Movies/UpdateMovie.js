@@ -1,39 +1,93 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function UpdateMovie() {
-  const titleRef = useRef();
-  const directorRef = useRef();
-  const metascoreRef = useRef();
-  const starsRef = useRef();
+export default function UpdateMovie({ history, location }) {
+  const [movieForm, setMovieForm] = useState({
+    id: null,
+    title: "",
+    director: "",
+    metascore: null,
+    stars: ""
+  });
 
-  const [movieData, setMoviedata] = useState({});
+  useEffect(() => {
+    setMovieForm({
+      id: location.state.movie.id,
+      title: location.state.movie.title,
+      director: location.state.movie.director,
+      metascore: location.state.movie.metascore,
+      stars: location.state.movie.stars.join(" | ")
+    });
+  }, []);
 
-  const getMovieData = () => {};
+  const handleChange = event => {
+    setMovieForm({
+      ...movieForm,
+      [event.target.id]: event.target.value
+    });
+    console.log(movieForm);
+  };
 
-  //   const updatePayload = {
-  //     id: movie.id,
-  //     title: titleRef.current.value,
-  //     director: directorRef.current.value,
-  //     metascore: metascoreRef.current.value,
-  //     stars: starsRef.current.value.split("|")
-  //   };
+  const updatePayload = {
+    ...movieForm,
+    stars: movieForm.stars.split(" | ")
+  };
+
+  const updateMovie = () => {
+    axios
+      .put(`http://localhost:5000/api/movies/${movieForm.id}`, updatePayload)
+      .then(res => {
+        debugger;
+
+        history.push(`/movies/${movieForm.id}`);
+      })
+      .catch(err => {
+        alert(err.message);
+      });
+  };
 
   return (
     <form>
       <label htmlFor="title">Title: </label>
-      <input type="text" id="title" ref={titleRef} />
+      <input
+        type="text"
+        id="title"
+        value={movieForm.title}
+        onChange={handleChange}
+      />
       <br />
       <label htmlFor="title">Director: </label>
-      <input type="text" id="director" ref={directorRef} />
+      <input
+        type="text"
+        id="director"
+        value={movieForm.director}
+        onChange={handleChange}
+      />
       <br />
       <label htmlFor="title">Metascore: </label>
-      <input type="number" id="metascore" ref={metascoreRef} />
+      <input
+        type="number"
+        id="metascore"
+        value={movieForm.metascore}
+        onChange={handleChange}
+      />
       <br />
       <label htmlFor="title">Stars: </label>
-      <input type="stars" id="stars" ref={starsRef} />
+      <input
+        type="stars"
+        id="stars"
+        value={movieForm.stars}
+        onChange={handleChange}
+      />
       <br />
-      <button>Update Movie</button>
+      <button
+        onClick={e => {
+          e.preventDefault();
+          return updateMovie();
+        }}
+      >
+        Update Movie
+      </button>
     </form>
   );
 }
