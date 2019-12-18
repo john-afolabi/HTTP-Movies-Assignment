@@ -45,7 +45,14 @@ export default class Movie extends React.Component {
           Save
         </div>
         <br />
-        <Link to={`/update-movie/${this.props.match.params.id}`}>
+        <Link
+          to={{
+            pathname: `/update-movie/${this.props.match.params.id}`,
+            state: {
+              movie: this.state.movie
+            }
+          }}
+        >
           <button>Update Movie</button>
         </Link>
       </div>
